@@ -14,29 +14,6 @@
 #include <atomic>
 
 using namespace std;
-//
-//class AtomicLong
-//{
-//public:
-//    inline void LazySet(int64_t aValue)
-//    {
-//        iValue.store(aValue, std::memory_order_release);
-//    }
-//    inline void Set(int64_t aValue)
-//    {
-//        iValue.store(aValue);
-//    }
-//    inline int64_t Get()
-//    {
-//        return iValue.load(std::memory_order_acquire);
-//    }
-//private:
-//    long long pad[16];
-//    std::atomic<int64_t> iValue;
-//    long long pad2[16];
-//};
-
-
 template<class T, unsigned long Q_SIZE = QUEUE_SIZE>
 class SP1C1Queue {
 private:

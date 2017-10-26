@@ -93,26 +93,6 @@ struct Producer : public Worker<Q> {
 
 	}
 };
-//
-//template<class Q>
-//struct Consumer : public Worker<Q> {
-//	Consumer(Q *q, size_t id)
-//		: Worker<Q>(q, id)
-//	{}
-//
-//	void operator()()
-//	{
-//		set_thr_id(Worker<Q>::thr_id_);
-//
-//		while (n.fetch_add(1) < N * PRODUCERS) {
-//			q_type *v = Worker<Q>::q_->pop();
-//			assert(v);
-//			assert(*v == X_MISSED);
-//			*v = (q_type)(thr_id() + 1); // don't write zero
-//		}
-//	}
-//};
-
 
 template<class Q>
 long long performanceRun(int runNumber, Q& q) {
