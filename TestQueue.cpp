@@ -17,6 +17,7 @@
 #include <chrono>
 
 #include "P1C1Queue.h"
+#include "SP1C1Queue.h"
 #include "SSP1C1Queue.h"
 
 using namespace std;
@@ -121,18 +122,34 @@ int main()
 //
 //    std::for_each(
 //        in(std::cin), in(), std::cout << (_1 * 3) << " " );
-
+	cout << "size of pointer here :" << sizeof(q_type*) << endl;
 	for (int i = 0; i < REPETITIONS; ++i)
 		x[i] = i;
 	{
-		SSP1C1Queue<q_type> b_q;
-		for (int i =0; i < 10; ++i)
-			performanceRun(1, b_q);
-		cout << "boost" << endl;
-		BoostQueue<q_type> b_q2;
+		{
+			cout << "P1C1Queue, simple lock free queue" << endl;
+			P1C1Queue<q_type> b_q1;
+			for (int i =0; i < 5; ++i)
+				performanceRun(1, b_q1);
+		}
+		{
+			cout << "SP1C1Queue, sparse lock free queue" << endl;
+			SP1C1Queue<q_type> b_q2;
+			for (int i =0; i < 5; ++i)
+				performanceRun(1, b_q2);
+		}
 
-		for (int i =0; i < 10; ++i)
-		performanceRun(1, b_q2);
+		{
+			cout << "SSP1C1Queue, sparse, but use head tail instead of element check" << endl;
+			SSP1C1Queue<q_type> b_q3;
+					for (int i =0; i < 5; ++i)
+						performanceRun(1, b_q3);
+		}
+		cout << "boost" << endl;
+		BoostQueue<q_type> b_qboost;
+
+		for (int i =0; i < 5; ++i)
+			performanceRun(1, b_qboost);
 	}
 
 	return 0;

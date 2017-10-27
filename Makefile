@@ -1,6 +1,6 @@
 BOOST_ROOT = ../utils/boost_1_65_1
 
-CXXFLAGS =	-I$(BOOST_ROOT) -std=c++11 -pthread -O3
+CXXFLAGS =	-I$(BOOST_ROOT) -std=c++11 -pthread -O3 -g
 OBJS =		TestQueue.o 	
 
 LIBS =

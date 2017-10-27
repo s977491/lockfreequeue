@@ -1,14 +1,17 @@
 /*
  * SP1C1Queue.h
  *
- *  Created on: Oct 18, 2017
+ * S stand for sparse, data are now separate by cachesize to prevent false sharing
+ * * this use whether object exist there to check for pop
+ * for push, here try to check a look ahead
+ *
+ *  Created on: Jan 18, 2016
  *      Author: laia
  */
 
 #ifndef SP1C1QUEUE_H_
 #define SP1C1QUEUE_H_
 
-#define ELESHIFT 4
 #define AHEAD_STEP Q_SIZE /4
 #include "common.h"
 #include <atomic>
@@ -37,14 +40,13 @@ private:
 public:
 	SP1C1Queue() {
 
-		capacity = SP1C1Queue::findNextPositivePowerOfTwo(Q_SIZE);
+		capacity = findNextPositivePowerOfTwo(Q_SIZE);
 		if (capacity != Q_SIZE)
 			cout << capacity << " diff " << Q_SIZE << endl;
 		mask = capacity-1;
 		tailCache = 0;
 		headCache = 0;
 		tailLimit = tailCache + capacity;
-		headLimit = 0;
 		for (int i = 0; i < Q_SIZE << ELESHIFT; ++i ) {
 			buffer[i].store(NULL);
 		}
@@ -71,10 +73,13 @@ public:
 	inline bool
 	pushImpl(T *x)
 	{
-		if (tailCache >= tailLimit && !offerSlowPath()) {
-			return false;
-		}
+//		if (tailCache >= tailLimit && !offerSlowPath()) {
+//			return false;
+//		}
+
 		const int tgt = id(tailCache, mask);
+		if (buffer[tgt].load(memory_order_acquire) != NULL)
+			return false;
 		buffer[tgt].store(x, memory_order_release);
 		++ tailCache;
 		return true;
@@ -106,12 +111,6 @@ public:
 		return x;
 	}
 private:
-	static int findNextPositivePowerOfTwo(int value) {
-		int i = 0;
-		cout << "findNextPositivePowerOfTwo" << value << endl;
-		while ( value>0) { ++i;value /=2; cout << "v:" << value<< endl;}
-        return 1 << (i-1);
-    }
 
 };
 

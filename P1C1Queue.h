@@ -1,7 +1,7 @@
 /*
  * P1C1Queue.h
  *
- *  Created on: Oct 18, 2017
+ *  Created on: Jan 18, 2016
  *      Author: laia
  */
 
@@ -13,13 +13,14 @@
 
 using namespace std;
 
+
 template<class T, unsigned long Q_SIZE = QUEUE_SIZE>
 class P1C1Queue {
 private:
 	char p0[64];
 	int capacity;
 	char p01[64];
-		int mask;
+	int mask;
 	char p1[64];
 	T* buffer[Q_SIZE];
 	char p2[64];
@@ -36,7 +37,7 @@ public:
 	P1C1Queue() {
 		head.store(0);
 		tail.store(0);
-		capacity = P1C1Queue::findNextPositivePowerOfTwo(Q_SIZE);
+		capacity = findNextPositivePowerOfTwo(Q_SIZE);
 		if (capacity != Q_SIZE)
 			cout << capacity << " diff " << Q_SIZE << endl;
 		mask = capacity-1;
@@ -94,12 +95,7 @@ public:
 		return x;
 	}
 private:
-	static int findNextPositivePowerOfTwo(int value) {
-		int i = 0;
-		cout << "findNextPositivePowerOfTwo" << value << endl;
-		while ( value>0) { ++i;value /=2; cout << "v:" << value<< endl;}
-        return 1 << (i-1);
-    }
+
 
 };
 

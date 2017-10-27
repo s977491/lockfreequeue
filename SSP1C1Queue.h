@@ -1,14 +1,17 @@
 /*
  * SSP1C1Queue.h
  *
- *  Created on: Oct 18, 2017
+ *  Created on: Jan 18, 2016
  *      Author: laia
+ *
+  * S stand for sparse, data are now separate by cachesize to prevent false sharing
+  *
+  * this use tail and head to check
  */
 
 #ifndef SSP1C1QUEUE_H_
 #define SSP1C1QUEUE_H_
 
-#define ELESHIFT 4
 #define AHEAD_STEP Q_SIZE /4
 #include "common.h"
 #include <atomic>
@@ -29,15 +32,13 @@ private:
 	std::atomic<int64_t> head;
 	char p4[64];
 	int tailCache;
-	char p5[64];
 	int headCache;
 	char p6[64];
 
-	int tailLimit;
 public:
 	SSP1C1Queue() {
 
-		capacity = SSP1C1Queue::findNextPositivePowerOfTwo(Q_SIZE);
+		capacity = findNextPositivePowerOfTwo(Q_SIZE);
 		if (capacity != Q_SIZE)
 			cout << capacity << " diff " << Q_SIZE << endl;
 		mask = capacity-1;
@@ -73,7 +74,7 @@ public:
 	{
 		//cout << "pushing " << endl;
 		const int64_t curTail = tail.load(memory_order_relaxed);
-		const int64_t wrap = curTail - capacity +32;
+		const int64_t wrap = curTail - capacity;
 		if (headCache <= wrap) {
 			headCache = head.load(memory_order_acquire);
 			if (headCache <=wrap) {
@@ -119,12 +120,7 @@ public:
 		return x;
 	}
 private:
-	static int findNextPositivePowerOfTwo(int value) {
-		int i = 0;
-		cout << "findNextPositivePowerOfTwo" << value << endl;
-		while ( value>0) { ++i;value /=2; cout << "v:" << value<< endl;}
-        return 1 << (i-1);
-    }
+
 
 };
 
